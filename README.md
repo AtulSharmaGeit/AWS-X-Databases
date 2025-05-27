@@ -617,7 +617,163 @@ In this step, we're going to create an Amazon EC2 instance using our default VPC
 
 -  Under **Instance type**, choose **t2.micro**.
 -  Under **Key pair (login)**, choose a **Create new key pair**
--  For your **Key pair name**, enter NextWorkAuroraApp
--  Leave your Key pair type as RSA
--  Leave your Private key file format as .pem since we're using SSH later on to access our EC2 instance.
+-  For your **Key pair name**, enter `NextWorkAuroraApp`
+-  Leave your **Key pair type** as **RSA**
+-  Leave your **Private key file format** as **.pem** since we're using SSH later on to access our EC2 instance.
 
+![image alt](Databases-42)
+
+-    Select **Create key pair**
+
+A new file will automatically download to your computer - This is your new key pair. We'll need it for later in the project to access our EC2 instance. Notice that it's a .pem file.
+
+-    Back in our EC2 creation, under **Network settings**, set these values and keep the other values as their defaults:
+        -    For **Allow SSH traffic from**, choose your IP address if it's correct. Otherwise select **Anywhere**.
+-    Check the boxes for **Allow HTTP traffic from the internet**.
+
+![image alt](Databases-43)
+
+-    Leave the default values for the remaining sections.
+-    Review the **Summary panel** of your instance configuration
+-    When you're ready, choose **Launch instance**.
+-    Navigate back to your list of EC2 instances, and then select the checkbox next to your new instance.
+-    In the **Details** tab, note the following important details:
+        -    In **Instance summary**, note the **Public IPv4 DNS**.
+        -    Note the value for **Key pair name**.
+ 
+![image alt](Databases-44)
+
+-    Wait until **Instance state** for your instance is **Running** before continuing.
+
+**Step - 3 : Finish creating your Aurora Database**
+
+Now that we've got our EC2 instance ready to go, we can go back to creating our Aurora database. This time, we'll connect it to our new EC2 instance.
+
+-    Navigate back to your open tab that you were creating our Aurora database in.
+-    We were up to the **Connectivity** section. But this time we have one big advantage...we have an EC2 instance!
+        -    For **Compute resource**, choose **Connect to an EC2 compute resource**.
+        -    Now select the drop down for **EC2 instance**, and choose **nextwork-ec2-instance-web-server**.
+        -    **NOTE**: We may need to select the refresh button to the right of the EC2 instance drop-down.
+ 
+![image alt](Databases-45)
+
+-    Scroll down and open the **Additional configuration** section.
+-    Enter `sample` for **Initial database name**.
+-    Keep the default settings for the other options.
+-    Select **Create database**.
+
+**Did you notice some scary looking monthly costs?** Don't worry! As long as we delete our database as soon as we've finished with this project, we'll be absolutely fine.
+
+-    Close any pop-ups that appear.
+-    Your new DB cluster will show in the **Databases** list with the status **Creating**.
+
+![image alt](Databases-46)
+
+-    Do you notice that your database has the name nextwork-db-cluster and that's there's two of them? What's with that?
+
+Remember how we said that Aurora is really good for the big jobs? The reason for this is **clusters**. A database cluster in Aurora is a group of database copies that work together so your data is always available.
+Each cluster consists of a primary instance (where all write operations occur) and multiple read replicas as back-ups. If your database's primary instance fails, one of the replicas can be promoted to primary automatically.
+
+-    Wait for the **Status** of your new DB cluster to show as **Available**.
+-    Select the **DB identifier** of your top database to take a look at the details.
+-    Notice that there are **two** Endpoints in our Database. Cool! This is our **cluster** in action.
+
+Our **writer** database instance is our primary instance that handles all the "write" operations like INSERT, UPDATE, and DELETE.
+Our **reader**database instance is our backup instance that can do very basic operations like SELECT. This is used to get data, but not to add or change data.
+
+**Why separate read and write?** We only want one writer instance at a time so that things stay focused and controlled...but we want multiple reader instances so that we can share the workload for read requests as our database grows and have a backup if our writer instance fails.
+
+**What is an endpoint?** In general, endpoints are like contact points where data flows in and out. A super popular example is a website URL! When you enter a website's address (like nextwork.org), your browser uses that endpoint to receive data and load the page. For databases, an endpoint is how your app finds a database to ask for data or update it.
+
+-    We've created a new relational database and have an EC2 instance waiting for our beautiful new web app. Can't wait to build that web app and connect it to our database in the next project!
+
+---
+##    Connect a Web App with Aurora
+
+There are countless web apps on the Internet today, and engineers use databases all the time to store the web app's data e.g. login credentials, e-commerce product information, movie reviews... Let's build a mini version of this pattern, by setting up a web app from scratch and connecting it with a relational database (Amazon Aurora) to store things that users input.
+
+**Step - 1 : Create your web app**
+
+Open your local Terminal
+-    On a **Mac**:
+        -    Press **Cmd + Space** to open Spotlight.
+        -    Type `Terminal` and press **Enter**.
+-    On a **Windows/Linux**:
+        -    Press **Windows + R** to open the Run dialog.
+        -    Type `cmd` or `powershell` and press **Enter**.
+ 
+![image alt](Databases-47)
+
+Connect to your EC2 instance
+-    We need to access our **.pem** file in order to login successfully to our EC2 instance - remember, the **.pem** file is like our keys to our EC2 instance!
+-    Find **.pem** file on our local computer and put it in a new folder on Desktop labelled `nextwork`
+-    Now we need to navigate to that folder from our terminal, so we can use it.
+-    Run the command `ls` in terminal - this shows all the folders that we can see from your current terminal position.
+-    If you can see the **desktop** folder when you run `ls` then you're in the right place.
+        -    If you can't see the **desktop** folder, then use the following commands to navigate up and down your folders until you can see **desktop**... 
+        -    To go back one folder run the command `cd ../`.
+        -    To go into a folder, run the command `cd folder-name` and replace **folder-name** with the name of the folder you'd like to enter.
+-    Once you can see your **Desktop** folder, navigate into that folder by running `cd Desktop`.
+-    Then navigate into your **nextwork** folder by running `cd nextwork`.
+-    Run `ls` to make sure your **.pem** file is there!
+
+Great! We have found our "keys" to get into our EC2 instance. Now we just need the "address" of our EC2 instance and then we get inside.
+-    Back in your AWS console, navigate to the details page of your **nextwork-ec2-instance-web-server** EC2 instance.
+-    Copy your **Public IPv4 DNS** address.
+
+![image alt](Databases-48)
+
+-    Back in your terminal run the following command:
+
+```bash
+ssh -i YOUR_PEM_FILE_NAME ec2-user@YOUR_EC2_ADDRESS
+```
+
+-    Make sure you replace **'YOUR_PEM_FILE_NAME'** with the name of your .pem file, and **'YOUR_EC2_ADDRESS'** with the copied EC2 address.
+-    Did you get an error telling you permissions denied?
+-    That's because you need the right permissions to access your **.pem** file. 
+-    Try running this command if you're on **Mac** or **Linux**:
+
+```bash
+chmod 400 YOUR_PEM_FILE_NAME
+```
+
+-    Make sure you replace **'YOUR_PEM_FILE_NAME'** with the name of your .pem file
+-    Once you've given your computer access to your **.pem** file, run the command to connect to our EC2 instance again:
+
+```bash
+ssh -i YOUR_PEM_FILE_NAME ec2-user@YOUR_EC2_ADDRESS
+```
+
+![image alt](Databases-49)
+
+-    Now remember that our EC2 instance is just another computer. First thing we need to do is make sure all the software on it is up to date!
+-    Run the following command:
+
+```bash
+sudo dnf update -y
+```
+
+-    After the updates complete, we're going to install a whole bunch of stuff needed to run your web app. In particular...
+        -    an **Apache web server** - the most widely used web server in the world. A web server is a software that gets your content (e.g. web pages) to users via the internet.
+        -    **PHP** - a programming language used for writing beautiful app pages.
+        -    **php-mysqli** - a PHP library (i.e. a collection of pre-written code to help you save time) for establishing a MySQL connection to your database.
+        -    **MariaDB** - a relational database management system. Our Aurora database knows how to manage its data (e.g. how to add a new row or retrieve data), but our web server doesn't know how to send instructions to and understand the responses from our Aurora database. Our web server would need MySQL-compatible client libraries i.e. software designed for servers to communicate with a MySQL database. Installing MariaDB in our EC2 instance is one of the many ways to install these client libraries so it can interact with Aurora.
+ 
+```bash
+sudo dnf install -y httpd php php-mysqli mariadb105
+```
+
+-    All systems go! Let's start the most basic version of our web app with the following command:
+
+```bash
+sudo systemctl start httpd
+```
+
+-    Test that your web app is running by entering your **IPv4 DNS** address into your browser.
+        -    Eg. `http://ec2-42-8-168-21.us-west-1.compute.amazonaws.com` - just make sure it's actually our one!
+        -    Make sure to change https to http - no 's'!
+ 
+![image alt](Databases-50)
+
+**Step - 2 : Make your Web App Cool**
