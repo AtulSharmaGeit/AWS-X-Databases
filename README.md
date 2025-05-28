@@ -3,8 +3,8 @@
 
 ---
 ##  Table Of Content
--  [Visualize a Relational Database](Visualize-a-Relational-Database)
--  [Aurora Database with EC2](Aurora-Database-with-EC2)
+-  [Visualize a Relational Database](#visualize-a-relational-database)
+-  [Aurora Database with EC2](#aurora-database-with-ec2)
 -  [Connect a Web App with Aurora](Connect-a-Web-App-with-Aurora)
 -  [Load Data into DynamoDB](Load-Data-into-DynamoDB)
 -  [Query Data with DynamoDB](Query-Data-with-DynamoDB)
