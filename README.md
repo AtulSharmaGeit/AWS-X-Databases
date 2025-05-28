@@ -5,6 +5,9 @@
 ##  Table Of Content
 -  [Visualize a Relational Database](Visualize-a-Relational-Database)
 -  [Aurora Database with EC2](Aurora-Database-with-EC2)
+-  [Connect a Web App with Aurora](Connect-a-Web-App-with-Aurora)
+-  [Load Data into DynamoDB](Load-Data-into-DynamoDB)
+-  [Query Data with DynamoDB](Query-Data-with-DynamoDB)
 
 ---
 ##  Visualize a Relational Database
@@ -777,3 +780,617 @@ sudo systemctl start httpd
 ![image alt](Databases-50)
 
 **Step - 2 : Make your Web App Cool**
+
+We've got a working database, EC2 instance, and now a basic web app running. But we still haven't actually connected our web app with our database. Wouldn't it be cool if we could update and see the changes of our database from our web app?
+
+Connect your EC2 instance to your Database
+-    While still connected to your EC2 instance, navigate to the **www** folder (this is where we store all our files for our web app!).
+
+```bash
+cd /var/www
+```
+
+-    Create a new sub-folder named **inc**.
+
+```bash
+mkdir inc
+```
+
+-    Whoops! Did you get another **permission denied** error?
+-    Let's find out what's going on here. Who actually has permissions in this folder? Run the following command to find out:
+
+```bash
+ls -ld
+```
+
+Command **ls** means list, and **-ld** means "list the details". Does the details of our folder look like this?
+
+![image alt](Databases-51)
+
+This means that the **root** user is the owner of this folder, and **only** the owner can edit this folder. When we access an EC2 instance using a key pair, we're by default logging in as an admin user (called ec2-user) which is not the root user! Let's change the owner of this folder so we (ec2-user) can edit it.
+
+-    Let's navigate back to where we were at the start:
+
+```bash
+cd ../../
+```
+
+-    Run the following command:
+
+```bash
+sudo chown ec2-user:ec2-user /var/www
+```
+
+-    Now let's see the details of that folder again...
+
+```bash
+ls -ld var/www
+```
+
+![image alt](Databases-52)
+
+Let's try it again.
+-    Navigate to your **www** folder
+
+```bash
+cd /var/www
+```
+
+-    Create a new sub-folder named **inc**.
+
+```bash
+mkdir inc
+```
+
+-    No errors! Navigate into your new **inc** folder.
+
+```bash
+cd inc
+```
+
+-    Create a new file in the **inc** directory named **dbinfo.inc**
+
+```bash
+>dbinfo.inc
+```
+
+-  Now we have a blank file. We can edit our new file by calling **nano**.
+
+```bash
+nano dbinfo.inc
+```
+
+![image alt](Databases-53)
+
+**Nano** is a way we can edit files in the terminal. We've just opened our blank **dbinfo.inc** file, and now we're going to add some code that connects it to our AWS database.
+
+-    **dbinfo.inc** is a settings file that stores the connection details our EC2 instance will need to connect to our Aurora database. To complete this file, we need our Aurora database **endpoint**.
+-    Navigate to our Aurora database details in AWS and copy the **Endpoint** of our **Writer** instance.
+
+![image alt](Databases-54)
+
+-    Copy and paste the following code to connect our EC2 instance to our Aurora database to the **dbinfo.inc** file.
+-    Make sure to replace **YOUR_ENDPOINT** with our actual Aurora Endpoint!
+-    Make sure to update **DB_PASSWORD** too.
+
+```bash
+<?php
+
+define('DB_SERVER', 'YOUR_ENDPOINT');
+define('DB_USERNAME', 'admin');
+define('DB_PASSWORD', 'password');
+define('DB_DATABASE', 'sample');
+?>
+```
+
+![image alt](Databases-55)
+
+-    Save and close the **dbinfo.inc** file by using **Ctrl+S** to save and then **Ctrl+X** to exit.
+
+**Now that our database is all connected, let's upgrade our web app page.**
+-    Navigate to your **html** folder:
+
+```bash
+cd /var/www/html
+```
+
+-    Create a new file in the **html** directory named **SamplePage.php**, and then edit the file by calling **nano**
+
+```bash
+>SamplePage.php
+nano SamplePage.php
+```
+
+-    Copy and paste the following script into your **SamplePage.php** file:
+
+```php
+<?php include "../inc/dbinfo.inc"; ?>
+<html>
+<body>
+<h1>Sample page</h1>
+<?php
+
+  /* Connect to MySQL and select the database. */
+  $connection = mysqli_connect(DB_SERVER, DB_USERNAME, DB_PASSWORD);
+
+  if (mysqli_connect_errno()) echo "Failed to connect to MySQL: " . mysqli_connect_error();
+
+  $database = mysqli_select_db($connection, DB_DATABASE);
+
+  /* Ensure that the EMPLOYEES table exists. */
+  VerifyEmployeesTable($connection, DB_DATABASE);
+
+  /* If input fields are populated, add a row to the EMPLOYEES table. */
+  $employee_name = htmlentities($_POST['NAME']);
+  $employee_address = htmlentities($_POST['ADDRESS']);
+
+  if (strlen($employee_name) || strlen($employee_address)) {
+    AddEmployee($connection, $employee_name, $employee_address);
+  }
+?>
+
+<!-- Input form -->
+<form action="<?PHP echo $_SERVER['SCRIPT_NAME'] ?>" method="POST">
+  <table border="0">
+    <tr>
+      <td>NAME</td>
+      <td>ADDRESS</td>
+    </tr>
+    <tr>
+      <td>
+        <input type="text" name="NAME" maxlength="45" size="30" />
+      </td>
+      <td>
+        <input type="text" name="ADDRESS" maxlength="90" size="60" />
+      </td>
+      <td>
+        <input type="submit" value="Add Data" />
+      </td>
+    </tr>
+  </table>
+</form>
+
+<!-- Display table data. -->
+<table border="1" cellpadding="2" cellspacing="2">
+  <tr>
+    <td>ID</td>
+    <td>NAME</td>
+    <td>ADDRESS</td>
+  </tr>
+
+<?php
+
+$result = mysqli_query($connection, "SELECT * FROM EMPLOYEES");
+
+while($query_data = mysqli_fetch_row($result)) {
+  echo "<tr>";
+  echo "<td>",$query_data[0], "</td>",
+       "<td>",$query_data[1], "</td>",
+       "<td>",$query_data[2], "</td>";
+  echo "</tr>";
+}
+?>
+
+</table>
+
+<!-- Clean up. -->
+<?php
+
+  mysqli_free_result($result);
+  mysqli_close($connection);
+
+?>
+
+</body>
+</html>
+
+
+<?php
+
+/* Add an employee to the table. */
+function AddEmployee($connection, $name, $address) {
+   $n = mysqli_real_escape_string($connection, $name);
+   $a = mysqli_real_escape_string($connection, $address);
+
+   $query = "INSERT INTO EMPLOYEES (NAME, ADDRESS) VALUES ('$n', '$a');";
+
+   if(!mysqli_query($connection, $query)) echo("<p>Error adding employee data.</p>");
+}
+
+/* Check whether the table exists and, if not, create it. */
+function VerifyEmployeesTable($connection, $dbName) {
+  if(!TableExists("EMPLOYEES", $connection, $dbName))
+  {
+     $query = "CREATE TABLE EMPLOYEES (
+         ID int(11) UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+         NAME VARCHAR(45),
+         ADDRESS VARCHAR(90)
+       )";
+
+     if(!mysqli_query($connection, $query)) echo("<p>Error creating table.</p>");
+  }
+}
+
+/* Check for the existence of a table. */
+function TableExists($tableName, $connection, $dbName) {
+  $t = mysqli_real_escape_string($connection, $tableName);
+  $d = mysqli_real_escape_string($connection, $dbName);
+
+  $checktable = mysqli_query($connection,
+      "SELECT TABLE_NAME FROM information_schema.TABLES WHERE TABLE_NAME = '$t' AND TABLE_SCHEMA = '$d'");
+
+  if(mysqli_num_rows($checktable) > 0) return true;
+
+  return false;
+}
+?>                        
+```
+
+![image alt](Databases-56)
+
+This big block of code is what makes our new web app look so cool! It's pulling in the details from our dbinfo.inc file we created earlier and using it to display up-to-date changes directly from our website.
+
+-    Save and close the **SamplePage.php** file by using **Ctrl+S** to save and then **Ctrl+X** to exit.
+-    Verify that your web server successfully connects to your DB cluster by opening a web browser and browsing to `http://EC2-instance-endpoint/SamplePage.php`. 
+
+![image alt](Databases-57)
+
+-    In browser, where our new web app is running, add some new data.
+
+![image alt](Databases-58)
+
+-    Notice how your results show on the page? If you're wondering how that happens, go back and have a look at your **SamplePage.php** file. All the magic is there!
+
+![image alt](Databases-59)
+
+-    To access our database, we're going to use **MySQL**.
+-    Download the MySQL repository into your EC2 instance:
+
+```bash
+sudo yum install https://dev.mysql.com/get/mysql80-community-release-el7-3.noarch.rpm -y
+```
+
+-    Install MySQL:
+
+```bash
+sudo yum install mysql-community-client -y
+```
+
+-   Connect to your Aurora MySQL Database:
+
+```bash
+mysql -h YOUR_ENDPOINT -P YOUR_PORT -u YOUR_AURORA_USERNAME -p
+```
+
+-    Make sure to replace:
+        -    **YOUR_ENDPOINT** with the Endpoint from our Aurora Writer instance
+        -    **YOUR_PORT** with the Port from our Aurora Writer instance; `3306`
+        -    **YOUR_AURORA_USERNAME** with our Aurora username; `admin`
+-    Enter in your Aurora password when prompted.
+-    Run `SHOW DATABASES`;
+        -    This shows us the databases that are in our MYSQL server.
+-    Run `USE sample`;
+        -    **sample** is the name we gave our first database schema.
+-    Run `SHOW TABLES`;
+        -    This shows us the tables in our **sample** schema.
+        -    If wondering where **Employees** came from, check our **SamplePage.php** file. It's all there! (Hint: this is also where we can change it if we're feeling creative)
+
+![image alt](Databases-60)
+
+-    Run `DESCRIBE EMPLOYEES`;
+        -    This tells you how the **Employees** table is structured.
+ 
+![image alt](Databases-61)
+
+-    Run `SELECT * FROM EMPLOYEES`;
+        -    This shows you the actual data in your table!
+ 
+![image alt](Databases-62)
+
+-    Have a play around adding more data in our web app, then re-running the commands above to check the data in your database.
+
+**Step - 3 : Delete Your Resources**
+
+Deleting resources that are not actively being used stops us getting charged and is a best practice. Not deleting our resources will result in charges to your account.
+
+-    Delete our database cluster: Open the Amazon RDS console, select **Databases**, and choose `nextwork-db-cluster`. Then, from the Actions drop-down menu, choose Delete.
+        -    When deleting our database cluster, make sure to uncheck **Create final snapshot** and uncheck **Retain automated backups** so we don't get charged.
+-    Delete your EC2 instance: Open the Amazon EC2 console, select **Instances**, and choose the instance you created. Click **Actions** at the top, then **Terminate instance**.
+-    Delete your key pair: Open the Amazon EC2 console, select **Key Pairs**, and choose the key pair you created. Click **Actions** at the top, then **Delete Key Pair**.
+
+---
+##  Load Data into DynamoDB
+
+Amazon DynamoDB is a non-relational database service. Non-relational databases use structures other than rows and columns to organise data. DynamoDB can also be described as a **NoSQL** database, or a **key-value** database. A NoSQL database means we would not use SQL to query it, while key-value is a specific way to store data that's flexible and efficient.
+
+**Step - 1 : Create your first DynamoDB table**
+
+-    Head to the **DynamoDB console** in our AWS Management Console.
+-    From the left hand navigation panel, select **Tables**.
+-    Select **Create table**.
+
+In Amazon DynamoDB, all data is organized into tables! Unlike relational databases which use rows and columns, DynamoDB tables use items and attributes. It might sound impossible to have a table that doesn't use rows and columns, but it's true that DynamoDB tables aren't like the traditional structure! Imagine if we had a table where each row had a different number of fields, and every single cell can have a different column header. Instead of the typical relational database structure (where each row has the same columns and column headers), database tables are a lot more flexible.
+
+-    Give your table a **Table name**: `NextWorkStudents`
+-    For the **Partition key**, we'll use `StudentName`
+
+Think of a **partition key** as the filter that DynamoDB will use to split up and find data. Partition key values don't have to be unique. For example if "Color" is a partition key, items can share partition key values like "Blue", "Green", "Red" and more. Later on, partition keys are used to efficiently find and grab items we're looking for (e.g. "find all items that have the Color "Green")! That's why every item in a DynamoDB table must have a value for the table's partition key - otherwise, DynamoDB would have no way of finding that item.
+
+![image alt](Databases-63)
+
+-    Next, under **Table settings**, select **Customize settings**.
+-    Expand the **Capacity calculator** section.
+-    Oooo, here's a tip on how AWS charges for DynamoDB.
+-    Note: we're about to see a cost estimate, but this project and the tables we create are free!
+
+![image alt](Databases-64)
+
+AWS cost estimates always tell us how much a resource might cost us money based on our current settings, but this estimate doesn't consider the AWS Free Tier. Right before AWS sends us a bill, AWS will check our actual use and won't charge us if we haven't gone over Free Tier limits.
+
+When we say "1 item read/second" in DynamoDB, it means our application can retrieve one item of data from our database every second. Changing this number would change our database's performance i.e. larger datasets with lots of items could want hundreds of reads each second! Just like item reads, 1 item write/second means our app can save/update one item a second.
+
+-    We won't change anything in the **Capacity Calculator**, but that was useful to understand how DynamoDB pricing works!
+-    Under **Read/write capacity settings**, let's make sure costs are as low as possible.
+-    Under **Read capacity**, turn **Auto scaling** off.
+
+Auto scaling can automatically adjust our database's performance (i.e. how fast it can return query results) based on real-time demand. Auto scaling can help engineers reduce costs in other situations, but if it's not monitored, it also has the power to boost our table's processing power (e.g. if our table suddenly needs to update lots of data). If that ever happens, auto scaling can push our table's settings to go over Free Tier limits! We're better off making our table stick to our current settings, which are already the lowest cost options.
+
+-    Change **provisioned capacity units** to `1`.
+-    Under **Write capacity**, turn **Auto scaling** off.
+-    Change **provisioned capacity units** to `1`.
+
+-    Hmm, what are capacity units?
+-    Back in our **Capacity Calculator**, notice that there's something called **Read capacity units** (RCUs) at the bottom of the panel.
+
+![image alt](Databases-65)
+
+-    In your calculator, try changing the number of **Item read/second** to `2`
+-    The number of **Read capacity units** in the calculator is still `1`!
+-    Now try changing the number of **Item read/second** to `3` in the calculator.
+-    Aha, the number of **Read capacity units** went up to `2`!
+
+![image alt](Databases-66)
+
+Think of read capacity units (RCUs) as a way to measure how many engines DynamoDB is using to operate. **1 read capacity unit (RCU)** = DynamoDB is using a single engine to run its read operations. This lets DynamoDB perform a max of 2 reads per second. So if we decide we actually want DynamoDB to run 3 reads per second, 1 engine won't be enough! The capacity calculator updates RCUs to 2, so now there are two engines powering DynamoDB to run read operations.
+
+-    Now try increasing **Item write/second** from `1` to `2`
+-    Ooo, the number of **Write capacity units** increases to `2` right away!
+
+Write capacity units (WCUs) are just like read capacity units - they give our DynamoDB tables the engines to edit/update/delete data!
+
+1 WCU = 1 item write/second.
+
+Yup, that means it costs more to run write operations than read operations. AWS charges our account based on how many RCUs and WCUs we've used each month. If our performance needs are really high, our RCUs and WCUs will go up!
+
+To make sure we don't get charged for this project, delete all resources once we're done. The **Free Tier** for DynamoDB gives us 25GB of data storage, plus 25 Write and 25 Read Capacity Units (WCU, RCU). This is enough to handle 200M requests per month... all for free.
+
+![image alt](Databases-67)
+
+-    Select **Create table**.
+-    Once our table is created, click into our table's name.
+-    Pause!
+-    Take a moment to look around before moving onto the next step. Get comfortable with the screen and the different things on it - there are quite a few panels in this page!
+-    When ready, select **Explore table items** on the top right hand corner.
+
+![image alt](Databases-68)
+
+-    Under **Items returned**, select **Create item**.
+-    Awesome! From the DynamoDB console, we can enter data manually straight away.
+
+DynamoDB is actually quite unique for letting us do this. All other AWS database services, except for Amazon Keyspaces, don't let us enter data directly from the console. DynamoDb is designed to be **extremely beginner and developer-friendly**. By having this feature, developers can quickly update their database structure and see how their apps will respond to these changes in real-time. This feature highlights DynamoDB's status as a fully managed AWS service i.e. we can concentrate more on building your applications instead of database management tasks like maintaining the database’s availability, durability, and scalability.
+
+-    Let's add our very first NextWork student to the table. Next to **StudentName**, enter `Nikko`
+-    Ooo, turns out we can even add new attributes! Let's select **Add new attribute**, this time selecting **Number**.
+-    For the new **Attributes name**, we'll call it `ProjectsComplete`.
+-    Enter in a value for the number of projects that Nikko has completed! We'll enter `4`.
+
+In DynamoDB, an attribute is like a piece of data about an item. In this case, our item is Nikko and the attribute is the number of projects Nikko completed. Each item in DynamoDB can have multiple attributes. But, unlike relational databases where each row in a table must have the same columns, DynamoDB items can have their own unique set of attributes.
+
+-    Select **Create item**.
+
+Nice! Notice a green confirmation banner that tells us we've consumed 0.5 Read capacity units.
+
+![image alt](Databases-69)
+
+'Read capacity units consumed: 0.5' means DynamoDB used only 0.5 RCUs to add that item. But AWS Free Tier only provides 25 RCUs a month, this **doesn't** mean we only have 24.5 RCUs left for the rest of this project. Think of it like we're driving a car, and the RCU is our speedometer telling us how much data it's processing a second. As long as we're not asking our table to speed up and perform lots of read operations in the same second, we'll be okay!
+
+-    Check our work. Do you see a **Table** called **NextWorkStudents** with a student **Nikko**?
+
+![image alt](Databases-70)
+
+This DynamoDB table makes it seem like data is organized in rows and columns, but it's actually quite different from traditional relational databases. Instead of looking at this as a spreadsheet, look at a DynamoDB table as a list of items (i.e. StudentNames, like Nikko), each with their own list of attributes (e.g. ProjectsComplete).
+
+With DynamoDB, our table can become very flexible and we can start adding new and different attributes for every item! It's like having a spreadsheet, except every row can have a different number of columns and different column headers. This level of flexibility is not possible with relational databases.
+
+**Step - 2 : Create DynamoDB tables with AWS CloudShell**
+
+**AWS CloudShell** is shell in our AWS Management Console, which means it's a space for us to run code! The awesome thing about AWS CloudShell is that it already has AWS CLI pre-installed. **AWS CLI** (Command Line Interface) is a software that lets us create, delete and update AWS resources with commands instead of clicking through your console.
+
+-    At the top of your AWS Management Console, select the icon for **AWS CloudShell**.
+-    Wait 30 seconds for your environment to be ready.
+
+![image alt](Databases-71)
+
+-    Run these commands to create new tables:
+
+```bash
+aws dynamodb create-table \
+    --table-name ContentCatalog \
+    --attribute-definitions \
+        AttributeName=Id,AttributeType=N \
+    --key-schema \
+        AttributeName=Id,KeyType=HASH \
+    --provisioned-throughput \
+        ReadCapacityUnits=1,WriteCapacityUnits=1 \
+    --query "TableDescription.TableStatus"
+aws dynamodb create-table \
+    --table-name Forum \
+    --attribute-definitions \
+        AttributeName=Name,AttributeType=S \
+    --key-schema \
+        AttributeName=Name,KeyType=HASH \
+    --provisioned-throughput \
+        ReadCapacityUnits=1,WriteCapacityUnits=1 \
+    --query "TableDescription.TableStatus"
+aws dynamodb create-table \
+    --table-name Post \
+    --attribute-definitions \
+        AttributeName=ForumName,AttributeType=S \
+        AttributeName=Subject,AttributeType=S \
+    --key-schema \
+        AttributeName=ForumName,KeyType=HASH \
+        AttributeName=Subject,KeyType=RANGE \
+    --provisioned-throughput \
+        ReadCapacityUnits=1,WriteCapacityUnits=1 \
+    --query "TableDescription.TableStatus"
+aws dynamodb create-table \
+    --table-name Comment \
+    --attribute-definitions \
+        AttributeName=Id,AttributeType=S \
+        AttributeName=CommentDateTime,AttributeType=S \
+    --key-schema \
+        AttributeName=Id,KeyType=HASH \
+        AttributeName=CommentDateTime,KeyType=RANGE \
+    --provisioned-throughput \
+        ReadCapacityUnits=1,WriteCapacityUnits=1 \
+    --query "TableDescription.TableStatus"
+```
+
+This script includes commands to create four new tables in AWS DynamoDB, each with specific attributes and settings. The four tables created are:
+    1.    **ContentCatalog Table**: This table has a numeric attribute called Id.
+    2.    **Forum Table**: This table has a partition key called Name.
+    3.    **Post Table**: This table has a partition key called ForumName and a sort key called Subject. We'll dive into sort keys soon!
+    4.    **Comment Table**: This table has a partition key called Id and a sort key called CommentDateTime.
+
+-    Off we goooooo!! AWS CloudShell tells AWS CLI to work with DynamoDB and create those tables for you.
+-    Let's confirm those tables were actually created. Run these wait commands, and wait until they all run and end:
+
+```bash
+aws dynamodb wait table-exists --table-name ContentCatalog
+aws dynamodb wait table-exists --table-name Forum
+aws dynamodb wait table-exists --table-name Post
+aws dynamodb wait table-exists --table-name Comment
+```
+
+When we run a wait command, we're telling our terminal to keep waiting until a condition is finally met. In our case, we're saying "keep waiting - don't finish running this command until this table has been created." Wait commands are helpful for making sure necessary resources have been created before we move on. Otherwise, future commands that depend on our resources would automatically fail!
+
+Can you guess what might happen if we ran a wait command before creating the resource itself? The wait command will keep running and waiting... eventually it'll decide that the resource doesn't exist and fail i.e. stop!
+
+-    Head back into our **DynamoDB** console and select the **Tables** tab.
+-    Confirm that you see four new tables!
+-    Tip: we might need to refresh our page if you don't see them straight away.
+
+![image alt](Databases-72)
+
+**Step - 3 : Load Data into Our Tables**
+
+Now that we've got our DynamoDB tables set up, we can actually start to load data in.
+-    Head back into our **CloudShell terminal**.
+-    Download and unzip this zip file with data:
+
+```bash
+curl -O https://storage.googleapis.com/nextwork_course_resources/courses/aws/AWS%20Project%20People%20projects/Project%3A%20Query%20Data%20with%20DynamoDB/nextworksampledata.zip
+
+unzip nextworksampledata.zip
+
+cd nextworksampledata
+```
+
+CloudShell is an environment that can also handle 1GB of storage, so we can save files inside CloudShell. And here's a fun tip: we could write and store scripts right in CloudShell to automate repetitive tasks, so we won't need to run AWS CLI commands line by line! CloudShell's storage is persistent, meaning our files and data will stay available across sessions as long as we stay within the 1 GB limit.
+
+-    Run `ls` to confirm that all files are now inside your CloudShell environment:
+
+![image alt](Databases-73)
+
+-    Want to see what's inside these files?
+-    Run `cat Forum.json`
+
+The **cat** command opens up and lets us read files directly in the terminal! So when we run `cat Forum.json`, the terminal will show us all the data inside the **Forum.json** file right on our screen. This is such a quick way to view or verify the contents of a file without having to open it somewhere else.
+
+![image alt](Databases-74)
+
+**Forum.json** contains data that's been formatted specifically for loading into DynamoDB:
+    1.    `"Forum"`: tells DynamoDB that the data relates to the Forum table.
+    2.    `"PutRequest"`: tells DynamoDB to add a new item into Forum table.
+    3.    Then the rest of each PutRequest includes the attributes of this new item! Notice how the first item has **five attributes** (Name, Category, Posts, Comments, Views) but the second item only has three.
+    4.    This is a great example of a DynamoDB table's flexibility - every item can have any number of attributes and attribute titles.
+    5.    If we were using a relational database... then both items would need to have a value for all the attribute names in the table! This makes your database bigger (and slower).
+
+-    Load the data of all four files into DynamoDB using AWS CLI's `batch-write-item` command:
+
+```bash
+aws dynamodb batch-write-item --request-items file://ContentCatalog.json
+
+aws dynamodb batch-write-item --request-items file://Forum.json
+
+aws dynamodb batch-write-item --request-items file://Post.json
+
+aws dynamodb batch-write-item --request-items file://Comment.json
+```
+
+`aws dynamodb batch-write-item` command is used to load or insert multiple items into DynamoDB tables!
+
+`--request-items` tells DynamoDB that the items are currently stored inside a file that it'll need to retrieve from.
+
+`file://` then tells DynamoDB that the file is stored locally in the CloudShell environment, with the name FILENAME.json.
+
+Each .json file we upload tells DynamoDB which table the items should go to!
+
+-    After each data load, we should get this comment saying that there were no Unprocessed Items.
+
+![image alt](Databases-75)
+
+Unprocessed items are records that weren't written to our database! If you see an unprocessed item, an error happened while loading our data into DynamoDB.
+
+**View and update your loaded data**
+-    Head back to the **DynamoDB** console.
+-    Select **Tables** from the left hand navigation panel.
+-    Pick the **ContentCatalog** table.
+-    Select **Explore table items** on the top right.
+-    Wooooohoo! Our items are now on display.
+
+![image alt](Databases-76)
+
+The data we loaded when we ran `aws dynamodb batch-write-item` is here! We can see now that the table has a partition key of Id (the very first column!), and there are 6 items in the table.
+
+-    Scroll through all the columns, can you tell what this data is showing?
+-    Take a look at the **ContentType** column. Some items are **Projects** and some items are **Videos**.
+-    This means the **ContentCatalog** Table stores NextWork's entire collection of content, which includes step-by-step projects (Projects) and wide range of videos (Videos).
+
+-    Click into a Project e.g. click into the item with the Id `1`.
+-    Wow! We get to see all the attributes in this Project right away.
+
+![image alt](Databases-77)
+
+-    Click **Add new attribute**, select **String** from the dropdown.
+-    Name the new attribute `StudentsComplete`
+-    For the value, enter `Nikko`
+
+![image alt](Databases-78)
+
+-    When done, click **Save and close**.
+-    Nice, we've just added a new attribute - **StudentsComplete** to an item!
+-    Now take a look at our Table - looks like **StudentsComplete** is now a new attribute at the top of the table.
+
+![image alt](Databases-79)
+
+-    Does that mean StudentsComplete is now an attribute for all the other items in the table?
+-    Let's find out. Try opening a Video item e.g. the item with Id `203`.
+-    Ooo this item has its own list of attributes...
+
+![image alt](Databases-80)
+
+-    Is our new attribute **StudentsComplete** here?
+-    Nope, it isn't!
+-    This is the reason why DynamoDB is known for its flexibility - every single item can have their own set of attributes. Just because StudentsComplete is an attribute in the first item (with Id 1), that doesn't mean there's a StudentsComplete attribute in the other items in this table.
+
+**What's the difference between this and a relational database?** Relational databases would need each row to have the same number of columns. So if we added StudentsComplete as a new column in a relational database, every item in that database would need to have a StudentsComplete value too, even if it doesn't apply.
+
+This has huge impacts on a DynamoDB vs a relational database's flexibility and speed!
+    1.    Flexibility - every item having their own unique set of attributes is a huge advantage when items in a table could look different from each other. For example, e-commerce sites and shopping carts need to store different types of products with different attributes in the same place.
+    2.    Speed - DynamoDB tables can use partition keys to split up a table and quickly find the items they're looking for. Relational databases have to scan through the entire table to find data, which can slow down performance.
+
+**When would someone pick relational databases over non-relational?** Relational databases use SQL, which makes handling complex queries a lot more straightforward! The strictness of a relational database's schema also means data is kept precise, accurate and consistent, which can be helpful for situations where the quality of data is a top priority (e.g. healthcare systems often opt for relational databases to keep patient records).
+
+---
+##    Query Data with DynamoDB
