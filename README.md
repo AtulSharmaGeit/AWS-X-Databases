@@ -5,9 +5,9 @@
 ##  Table Of Content
 -  [Visualize a Relational Database](#visualize-a-relational-database)
 -  [Aurora Database with EC2](#aurora-database-with-ec2)
--  [Connect a Web App with Aurora](Connect-a-Web-App-with-Aurora)
--  [Load Data into DynamoDB](Load-Data-into-DynamoDB)
--  [Query Data with DynamoDB](Query-Data-with-DynamoDB)
+-  [Connect a Web App with Aurora](#connect-a-web-app-with-aurora)
+-  [Load Data into DynamoDB](#load-data-into-dynamoDB)
+-  [Query Data with DynamoDB](#query-data-with-dynamoDB)
 
 ---
 ##  Visualize a Relational Database
@@ -1394,3 +1394,62 @@ This has huge impacts on a DynamoDB vs a relational database's flexibility and s
 
 ---
 ##    Query Data with DynamoDB
+
+**Step - 1 : Run Our first query with the console**
+
+We've got our DynamoDB tables AND loaded in data. Now let's extract some insights from our data using queries.
+-    Stay on the **ContentCatalog** table, but this time let's select **Query** under the heading **Scan or query items**.
+
+![image alt](Databases-81)
+
+-    Let's enter an **Id (Partition key)** to query for a specific item. Enter `201`
+-    Select **Run**.
+-    Oooo, now only the specific item you've searched for is in your table.
+
+![image alt](Databases-82)
+
+-    Are we ready to query another table?
+-    From the **Tables** section on the left hand side of the console, select **Comment**.
+-    Expand the **Scan or query** items arrow.
+-    Select **Query**.
+
+![image alt](Databases-83)
+
+-    Ooo, notice anything different?
+-    There's **Id (Partition key)** like last time, but there's also a new Sort key called **CommentDataTime** underneath.
+
+A sort key is a secondary key used to filter our query results again! Sort keys work after the partition key i.e. we still have to use the partition key to split up our data first, and then the sort key partitions our data again. Sort keys are optional, which is why our ContentCatalog table could still work without one!
+
+A sort key is a great (and oftentimes, necessary) tool for tables where items can share a partition key value! In those situations, the **partition key + sort key** should form a unique combination. That combination is called our **primary key** so we can still query for single, unique items in that table.
+
+-    Before we run any queries, check out the items in **Comment**.
+
+![image alt](Databases-84)
+
+This table is storing comments left on posts in the NextWork community. It might help to check out the Posts table too - notice that there are two items there, and each item is a post that was made in the community. A Comment is a comment made on that post, which is why their ID is the name of the original post!
+
+-    Now try to query this so that you're only seeing comments to the post **I have a question/Just Complete Project #7 Dependencies and CodeArtifacts**. Only show comments that were posted from the 1st of September, 2024.
+-    Under **Id (Partition key)**, enter `I have a question/Just Complete Project #7 Dependencies and CodeArtifacts`
+-    Under CommentDateTime (Sort key), switch the **Equal to** dropdown to **Greater than**.
+-    Enter `2024-09-01` as your sort key.
+-    Select **Run**.
+-    Bingo!
+
+![image alt](Databases-85)
+
+-    Here's your next challenge: how would you look for all comments posted by **User Abdulrahman**?
+-    Clear the **Id (Partition key)** and **CommentDateTime (Sort key)**.
+-    Expand the **Filters** arrow.
+-    Enter `PostedBy` as the **Attribute name**.
+-    Enter `User Abdulrahmanas` the **Value**.
+-    Select **Run**.
+
+![image alt](Databases-86)
+
+**There's an error!** That's right - we have to use the Id (Partition key) when we query items. This teaches us two things:
+    1.    Data modelling is sooo important - data engineers think very carefully about what queries they should prepare and design for before they upload any data!
+    2.    We probably wouldn't have this kind of issue if we could use SQL, so this is a situation where it would be beneficial to use a relational database!
+
+Data modeling in DynamoDB is all about planning how to set up our tables, e.g. what should be a table's partition keys and sort keys? This planning stage is essential because it affects how easily we can get to our data and how quickly our database responds later on. If we don’t get this part right, like if we use the wrong keys in our queries, finding the data we need can become really slow or even impossible (like our scenario here!).
+
+**Step - 2 : Run Queries with AWS CLI**
