@@ -27,12 +27,12 @@ In AWS, a user is a person or a computer that can do things on the AWS cloud. Wh
 
 This does not apply to all accounts, but if you're prompted with a pop up panel that says **Are you providing access to a person?**, choose **I want to create an IAM user**.
 
-![image alt](Databases-1)
+![image alt](https://github.com/AtulSharmaGeit/AWS-X-Databases/blob/22460274f1da260cbc1fffef2588d0da4e43720c/Images/Databases-1.png)
 
 -  For the console password, choose **Custom password**.
 -  Type in a password that you will be able to remember/access in the future.
 
-![image alt](Databases-2)
+![image alt](https://github.com/AtulSharmaGeit/AWS-X-Databases/blob/22460274f1da260cbc1fffef2588d0da4e43720c/Images/Databases-2.png)
 
 -  Deselect the checkbox for **Users must create a new password at next sign-in - Recommended**.
 -  Choose **Next**.
@@ -43,7 +43,7 @@ This does not apply to all accounts, but if you're prompted with a pop up panel 
 -  Voilà - you've just created your new user! **Stay on this page**.
 -  Choose **Download .csv file**.
 
-![image alt](Databases-3)
+![image alt](https://github.com/AtulSharmaGeit/AWS-X-Databases/blob/22460274f1da260cbc1fffef2588d0da4e43720c/Images/Databases-3.png)
 
 -  Copy the **Console sign-in URL**.
 -  **Now you're ready to start using your IAM user**.
@@ -52,7 +52,7 @@ This does not apply to all accounts, but if you're prompted with a pop up panel 
 -  Open your downloaded .csv file containing your user's access instructions.
 -  Log in using your IAM user's username and password in the .csv file.
 
-![image alt](Databases-4)
+![image alt](https://github.com/AtulSharmaGeit/AWS-X-Databases/blob/22460274f1da260cbc1fffef2588d0da4e43720c/Images/Databases-4.png)
 
 **Step - 2 : Create a Relational Database**
 
@@ -63,7 +63,7 @@ Strangely enough, there isn't really such a thing as a "normal" database. We hav
 -  Take note of your **Region** in the top right of your AWS Console.
 -  It doesn't matter exactly which Region you have, as long as you know it.
 
-![image alt](Databases-5)
+![image alt](https://github.com/AtulSharmaGeit/AWS-X-Databases/blob/22460274f1da260cbc1fffef2588d0da4e43720c/Images/Databases-5.png)
 
 -  Head to your **Aurora and RDS console** - search for `rds` in search bar at the top of the screen.
 -  In the left navigation bar, select **Databases**.
@@ -75,7 +75,7 @@ Strangely enough, there isn't really such a thing as a "normal" database. We hav
  
 **MySQL** is a relational database management system (RDBMS) that uses SQL as the language for database interaction. If databases were libraries, think of RDBMS as the librarians who know exactly where each book is located, how to organize new books that arrive, and how to maintain the library's order. MySQL is software used to create, manage, and interact with relational databases but is only one of many options for using SQL to manage relational data. Other options include PostgreSQL, MariaDB, or SQLite.
 
-![image alt](Databases-6)
+![image alt](https://github.com/AtulSharmaGeit/AWS-X-Databases/blob/22460274f1da260cbc1fffef2588d0da4e43720c/Images/Databases-6.png)
 
 -  For **DB instance identifier**, type `QuickSightDatabase`.
 -  For **Master username**, enter `admin`.
@@ -83,7 +83,7 @@ Strangely enough, there isn't really such a thing as a "normal" database. We hav
 -  For **Master password**, type a unique password, and confirm password.
 -  Make sure you save your database login details somewhere safe! You'll need them later on.
 
-![image alt](Databases-7)
+![image alt](https://github.com/AtulSharmaGeit/AWS-X-Databases/blob/22460274f1da260cbc1fffef2588d0da4e43720c/Images/Databases-7.png)
 
 -  Leave the rest as the default settings and select choose **Create database**.
 -  It may take five or more minutes for the database to be created.
@@ -103,13 +103,13 @@ AWS RDS can actually import data from S3 using tools like AWS Database Migration
 -  Scroll down to the Connectivity section, choose **Additional Configuration**.
 -  Then, choose **Publicly accessible**.
 
-![image alt](Databases-8)
+![image alt](https://github.com/AtulSharmaGeit/AWS-X-Databases/blob/22460274f1da260cbc1fffef2588d0da4e43720c/Images/Databases-8.png)
 
 -  Choose **Continue**.
 -  Choose **Apply immediately**.
 -  Select **Modify DB instance**.
 
-![image alt](Databases-9)
+![image alt](https://github.com/AtulSharmaGeit/AWS-X-Databases/blob/22460274f1da260cbc1fffef2588d0da4e43720c/Images/Databases-9.png)
 
 This can take some time, so don't be concerned if it takes five or so minutes for the modifcations to come through!
 
@@ -118,7 +118,7 @@ Next we want to modify the security group attached to your RDS instance so that 
 -  Then, choose **quicksightdatabase**.
 -  On the **quicksightdatabase** page, in the Connectivity & security section, choose the **VPC security groups** link.
 
-![image alt](Databases-10)
+![image alt](https://github.com/AtulSharmaGeit/AWS-X-Databases/blob/22460274f1da260cbc1fffef2588d0da4e43720c/Images/Databases-10.png)
 
 -  On the **Security groups** page, choose the **Security group ID**.
 -  On the sg-default page, in the Inbound rules section, choose **Edit inbound rules**.
@@ -126,7 +126,7 @@ Next we want to modify the security group attached to your RDS instance so that 
     -  For **Type**, choose **All TCP** from the drop-down list.
     -  For **Source**, choose **My IP**.
  
-![image alt](Databases-11)
+![image alt](https://github.com/AtulSharmaGeit/AWS-X-Databases/blob/22460274f1da260cbc1fffef2588d0da4e43720c/Images/Databases-11.png)
 
 -  Then, choose **Save rules**.
 
@@ -137,11 +137,11 @@ We need MySQL Workbench to access our database, so we need to change the inbound
 -  Verify that MySQL Workbench has downloaded successfully. Then, install and open the software.
 -  Select **Databases** in the top menu bar, then **Manage Connections...**
 
-![image alt](Databases-12)
+![image alt](https://github.com/AtulSharmaGeit/AWS-X-Databases/blob/22460274f1da260cbc1fffef2588d0da4e43720c/Images/Databases-12.png)
 
 -  Select **New** in the bottom left.
 
-![image alt](Databases-13)
+![image alt](https://github.com/AtulSharmaGeit/AWS-X-Databases/blob/22460274f1da260cbc1fffef2588d0da4e43720c/Images/Databases-13.png)
 
 -  Enter the following details:
     -  For **Connection Name**, paste `AWS-QuickSightDatabase`
@@ -150,17 +150,17 @@ We need MySQL Workbench to access our database, so we need to change the inbound
     -  Copy this into **Hostname** in your MySQL Workbench.
     -  Copy the **Port** from the same place in AWS to the **Port** field in MySQL Workbench.
  
-![image alt](Databases-14)
+![image alt](https://github.com/AtulSharmaGeit/AWS-X-Databases/blob/22460274f1da260cbc1fffef2588d0da4e43720c/Images/Databases-14.png)
 
 -  For **Username**, type the username you entered when creating the **QuickSightDatabase** (probably `admin` unless you changed it).
 -  For **Password**, select **Store in Keychain** ... then enter in your database password.
 
-![image alt](Databases-15)
+![image alt](https://github.com/AtulSharmaGeit/AWS-X-Databases/blob/22460274f1da260cbc1fffef2588d0da4e43720c/Images/Databases-15.png)
 
 -  Then, choose **Test Connection**.
 -  You should get a pop-up that say's **Successfully made the MySQL connection**.
 
-![image alt](Databases-16)
+![image alt](https://github.com/AtulSharmaGeit/AWS-X-Databases/blob/22460274f1da260cbc1fffef2588d0da4e43720c/Images/Databases-16.png)
 
 **Step - 4 : Create Database Tables and Load Data**
 
@@ -168,7 +168,7 @@ Now that we've got our MySQL Workbench connected with our RDS instance, we can a
 -  Close any pop-ups that are still open in MySQL Workbench.
 -  Select your newly created connection to open the MySQL Workbench Query Editor.
 
-![image alt](Databases-17)
+![image alt](https://github.com/AtulSharmaGeit/AWS-X-Databases/blob/22460274f1da260cbc1fffef2588d0da4e43720c/Images/Databases-17.png)
 
 -  Select **Schemas** as the tab in the top left, next to **Administration**.
 
@@ -179,7 +179,7 @@ A database **schema** is like a blueprint or structure of how the data is organi
 -  Name your schema `QuickSightDatabase`.
 -  Leave everything else as is, and select **Apply**.
 
-![image alt](Databases-18)
+![image alt](https://github.com/AtulSharmaGeit/AWS-X-Databases/blob/22460274f1da260cbc1fffef2588d0da4e43720c/Images/Databases-18.png)
 
 -  Review the SQL Script pop-up; notice that it's showing you how the command looks in SQL.
 -  Select **Apply**.
@@ -188,7 +188,7 @@ A database **schema** is like a blueprint or structure of how the data is organi
 
 **Can't find the 'Query 1' tab?** Try selecting the first file icon in the top tool bar. When you hover over the icon it says "Create a new SQL tab for executing queries". Click this icon to open a new query script! 
 
-![image alt](Databases-19)
+![image alt](https://github.com/AtulSharmaGeit/AWS-X-Databases/blob/22460274f1da260cbc1fffef2588d0da4e43720c/Images/Databases-19.png)
 
 In our new Query script, copy and paste the following SQL query.
 
@@ -208,7 +208,7 @@ department INT)
 
 **Did you get an error?** If you get an error it might be because you haven't selected your schema in the right menu. Make sure that you **double-click** your schema **'QuickSightDatabase'**. Then run the query again!
 
-![image alt](Databases-20)
+![image alt](https://github.com/AtulSharmaGeit/AWS-X-Databases/blob/22460274f1da260cbc1fffef2588d0da4e43720c/Images/Databases-20.png)
 
 -  To see the results from our query, delete the current query and replace it with the following:
 
@@ -218,7 +218,7 @@ SELECT * FROM newhire;
 
 -  Run this new query to see the empty table you just created!
 
-![image alt](Databases-21)
+![image alt](https://github.com/AtulSharmaGeit/AWS-X-Databases/blob/22460274f1da260cbc1fffef2588d0da4e43720c/Images/Databases-21.png)
 
 -  Now let's populate our new table by running another query.
 -  Delete the current contents of your query script and paste in the following:
@@ -248,7 +248,7 @@ INSERT INTO newhire (empno, ename, job, manager, hiredate, salary, comm, departm
 SELECT * FROM newhire;
 ```
 
-![image alt](Databases-22)
+![image alt](https://github.com/AtulSharmaGeit/AWS-X-Databases/blob/22460274f1da260cbc1fffef2588d0da4e43720c/Images/Databases-22.png)
 
 Remove the current query and run the following to create and populate a second table:
 
@@ -271,7 +271,7 @@ INSERT INTO department (deptno, dname, loc) VALUES
 SELECT * FROM department;
 ```
 
-![image alt](Databases-23)
+![image alt](https://github.com/AtulSharmaGeit/AWS-X-Databases/blob/22460274f1da260cbc1fffef2588d0da4e43720c/Images/Databases-23.png)
 
 **Step - 5 : Connect RDS to QuickSight**
 
@@ -284,7 +284,7 @@ We've got a database with some data in it. Now let's connect it up to QuickSight
     -  Type: **All Traffic**
     -  Source: **Custom**, then `0.0.0.0/0` in the next box
  
-![image alt](Databases-24)
+![image alt](https://github.com/AtulSharmaGeit/AWS-X-Databases/blob/22460274f1da260cbc1fffef2588d0da4e43720c/Images/Databases-24.png)
 
 This inbound rule let's any external service access our RDS instance. `0.0.0.0/0` means "**all addresses**" so applies to anyone trying to access our RDS instance.
 
@@ -296,7 +296,7 @@ This inbound rule let's any external service access our RDS instance. `0.0.0.0/0
 -  Once you're in QuickSight, select **Datasets** from the left menu.
 -  In the top right of the screen, select **New dataset**
 
-![image alt](Databases-25)
+![image alt](https://github.com/AtulSharmaGeit/AWS-X-Databases/blob/22460274f1da260cbc1fffef2588d0da4e43720c/Images/Databases-25.png)
 
 -  WOW! Look at all those options! So many things we could build in the future.
 -  For now, let's stick to the mission; select **RDS**
@@ -313,7 +313,7 @@ This inbound rule let's any external service access our RDS instance. `0.0.0.0/0
 -  Select **Validate connection**
 -  Volia! It works!
 
-![image alt](Databases-26)
+![image alt](https://github.com/AtulSharmaGeit/AWS-X-Databases/blob/22460274f1da260cbc1fffef2588d0da4e43720c/Images/Databases-26.png)
 
 **Step - 6 : Secure QuickSight**
 
@@ -328,13 +328,13 @@ We can put QuickSight in a Security Group and our RDS in a Security Group, then 
 -  For **Description** enter `Security Group that contains QuickSight`
 -  Select the **default VPC** as your VPC option. We haven't created our own VPC so the default one is what our RDS and QuickSight will be living in.
 
-![image alt](Databases-27)
+![image alt](https://github.com/AtulSharmaGeit/AWS-X-Databases/blob/22460274f1da260cbc1fffef2588d0da4e43720c/Images/Databases-27.png)
 
 -  Leave the inbound and outbound rules as they are.
 -  Select **Create security group**
 -  Take note of our new **QuickSight_SecGp ID** we'll need it so we can attach our new security group to QuickSight.
 
-![image alt](Databases-28)
+![image alt](https://github.com/AtulSharmaGeit/AWS-X-Databases/blob/22460274f1da260cbc1fffef2588d0da4e43720c/Images/Databases-28.png)
 
 We have an empty QuickSight Security Group living inside the same VPC as our RDS instance. Now that we've created our Security Group we need to actually associate it with to QuickSight.
 
@@ -351,11 +351,11 @@ Execution role is the IAM role which will give us the permissions to create this
 -  Select the default dropdown options for the **Subnet ID** fields
 -  For **Security Group IDs** select the same ID as your **QuickSight_SecGp**.
 
-![image alt](Databases-29)
+![image alt](https://github.com/AtulSharmaGeit/AWS-X-Databases/blob/22460274f1da260cbc1fffef2588d0da4e43720c/Images/Databases-29.png)
 
 -  Select **Add** to confirm your VPC
 
-![image alt](Databases-30)
+![image alt](https://github.com/AtulSharmaGeit/AWS-X-Databases/blob/22460274f1da260cbc1fffef2588d0da4e43720c/Images/Databases-30.png)
 
 -  Whoops! An error!
 -  If we read our error we can see it tells us what to do:
@@ -441,14 +441,14 @@ Alright - so our QuickSight service is now safely in our own security group. Let
     -  For **Source** select **Custom** and then search for the security group ID of your **QuickSight_SecGp**
 -  Select **Create security group**
 
-![image alt](Databases-31)
+![image alt](https://github.com/AtulSharmaGeit/AWS-X-Databases/blob/22460274f1da260cbc1fffef2588d0da4e43720c/Images/Databases-31.png)
 
 Now let's attach it to our RDS instance.
 -  Return to your RDS instance and select **Modify**
 -  Under the **Connectivity** section, look for **Security group**
 -  Select your newly created **RDS_SecGp** and remove any existing one.
 
-![image alt](Databases-32)
+![image alt](https://github.com/AtulSharmaGeit/AWS-X-Databases/blob/22460274f1da260cbc1fffef2588d0da4e43720c/Images/Databases-32.png)
 
 -  Select **Continue**
 -  Select **Apply immediately**
@@ -473,14 +473,14 @@ Now that everything is wired up, secure, and ready to go, we can jump back into 
 -  Select **Validate connection**
 -  Nice work - a secure connection!
 
-![image alt](Databases-33)
+![image alt](https://github.com/AtulSharmaGeit/AWS-X-Databases/blob/22460274f1da260cbc1fffef2588d0da4e43720c/Images/Databases-33.png)
 
 -  Select **Create data source**
 -  Select **newhire** as the table to visualize.
 -  Click **Select**
 -  Select **Directly query your data** and then **Visualize**.
 
-![image alt](Databases-34)
+![image alt](https://github.com/AtulSharmaGeit/AWS-X-Databases/blob/22460274f1da260cbc1fffef2588d0da4e43720c/Images/Databases-34.png)
 
 **Step - 9 : Make some charts!**
 
@@ -488,7 +488,7 @@ Now that everything is wired up, secure, and ready to go, we can jump back into 
 -  Drag **jobs** into the **x-axis**.
 -  Drag **salary** into the **Value** measure.
 
-![image alt](Databases-35)
+![image alt](https://github.com/AtulSharmaGeit/AWS-X-Databases/blob/22460274f1da260cbc1fffef2588d0da4e43720c/Images/Databases-35.png)
 
 -  Continue adding any other charts you feel like!
 -  When you're ready, select **Publish** in the top right
@@ -538,11 +538,11 @@ Make sure you delete all your resources to avoid getting charged. Deleting resou
 -  Under **Account termination**, select **Manage**
 -  Select `Account Settings` from the left hand navigation panel, and then **Manage** at the bottom of the page.
 
-![image alt](Databases-36)
+![image alt](https://github.com/AtulSharmaGeit/AWS-X-Databases/blob/22460274f1da260cbc1fffef2588d0da4e43720c/Images/Databases-36.png)
 
 -  **Toggle off** account termination, and then type **confirm** before clicking **Delete account**.
 
-![image alt](Databases-37)
+![image alt](https://github.com/AtulSharmaGeit/AWS-X-Databases/blob/22460274f1da260cbc1fffef2588d0da4e43720c/Images/Databases-37.png)
 
 **Optional** : Uninstall the MySQL Workbench on your local machine.
 
@@ -573,7 +573,7 @@ AWS Aurora is a type of relational database. As you can tell from the first few 
 
 **Templates** are pre-set settings that help you quickly set up your database environment according to your needs. It's basically AWS helping you make selections for the rest of this set-up page! The Dev/Test template is designed for development and testing environments, helping you pick lower cost options.
 
-![image alt](Databases-38)
+![image alt](https://github.com/AtulSharmaGeit/AWS-X-Databases/blob/22460274f1da260cbc1fffef2588d0da4e43720c/Images/Databases-38.png)
 
 -  In the **Settings** section, set these values:
     -  **DB cluster identifier**: `nextwork-db-cluster`
@@ -583,7 +583,7 @@ AWS Aurora is a type of relational database. As you can tell from the first few 
     -  **Confirm password**: Retype the password.
     -  Make sure you save your database login details somewhere safe! You'll need them later on.
 
-![image alt](Databases-39)
+![image alt](https://github.com/AtulSharmaGeit/AWS-X-Databases/blob/22460274f1da260cbc1fffef2588d0da4e43720c/Images/Databases-39.png)
 
 -  Leave the **Cluster storage configuration** settings as default.
 -  In the **Instance configuration** section, set these values:
@@ -596,7 +596,7 @@ AWS Aurora is a type of relational database. As you can tell from the first few 
 
 **Burstable classes (includes t classess)** are cost-effective types of database instances that are best when you have a consistent baseline level of traffic with occassional, random spikes in demand...a sudden "burst" of traffic. By choosing burstable classes, our database can perform well under high traffic, but also save us costs when things are quiet.
 
-![image alt](Databases-40)
+![image alt](https://github.com/AtulSharmaGeit/AWS-X-Databases/blob/22460274f1da260cbc1fffef2588d0da4e43720c/Images/Databases-40.png)
 
 -  In the **Availability and durability** section, use the default values. We'll jump into what this means later!
 -  In the **Connectivity** section, the first thing it asks us is whether we need to connect to an EC2 instance...
@@ -616,7 +616,7 @@ In this step, we're going to create an Amazon EC2 instance using our default VPC
     -  Choose the **Amazon Linux 2023 AMI**.
     -  Keep the defaults for the other choices.
 
- ![image alt](Databases-41)
+ ![image alt](https://github.com/AtulSharmaGeit/AWS-X-Databases/blob/22460274f1da260cbc1fffef2588d0da4e43720c/Images/Databases-41.png)
 
 -  Under **Instance type**, choose **t2.micro**.
 -  Under **Key pair (login)**, choose a **Create new key pair**
@@ -624,7 +624,7 @@ In this step, we're going to create an Amazon EC2 instance using our default VPC
 -  Leave your **Key pair type** as **RSA**
 -  Leave your **Private key file format** as **.pem** since we're using SSH later on to access our EC2 instance.
 
-![image alt](Databases-42)
+![image alt](https://github.com/AtulSharmaGeit/AWS-X-Databases/blob/22460274f1da260cbc1fffef2588d0da4e43720c/Images/Databases-42.png)
 
 -    Select **Create key pair**
 
@@ -634,7 +634,7 @@ A new file will automatically download to your computer - This is your new key p
         -    For **Allow SSH traffic from**, choose your IP address if it's correct. Otherwise select **Anywhere**.
 -    Check the boxes for **Allow HTTP traffic from the internet**.
 
-![image alt](Databases-43)
+![image alt](https://github.com/AtulSharmaGeit/AWS-X-Databases/blob/22460274f1da260cbc1fffef2588d0da4e43720c/Images/Databases-43.png)
 
 -    Leave the default values for the remaining sections.
 -    Review the **Summary panel** of your instance configuration
@@ -644,7 +644,7 @@ A new file will automatically download to your computer - This is your new key p
         -    In **Instance summary**, note the **Public IPv4 DNS**.
         -    Note the value for **Key pair name**.
  
-![image alt](Databases-44)
+![image alt](https://github.com/AtulSharmaGeit/AWS-X-Databases/blob/22460274f1da260cbc1fffef2588d0da4e43720c/Images/Databases-44.png)
 
 -    Wait until **Instance state** for your instance is **Running** before continuing.
 
@@ -658,7 +658,7 @@ Now that we've got our EC2 instance ready to go, we can go back to creating our 
         -    Now select the drop down for **EC2 instance**, and choose **nextwork-ec2-instance-web-server**.
         -    **NOTE**: We may need to select the refresh button to the right of the EC2 instance drop-down.
  
-![image alt](Databases-45)
+![image alt](https://github.com/AtulSharmaGeit/AWS-X-Databases/blob/22460274f1da260cbc1fffef2588d0da4e43720c/Images/Databases-45.png)
 
 -    Scroll down and open the **Additional configuration** section.
 -    Enter `sample` for **Initial database name**.
@@ -670,7 +670,7 @@ Now that we've got our EC2 instance ready to go, we can go back to creating our 
 -    Close any pop-ups that appear.
 -    Your new DB cluster will show in the **Databases** list with the status **Creating**.
 
-![image alt](Databases-46)
+![image alt](https://github.com/AtulSharmaGeit/AWS-X-Databases/blob/22460274f1da260cbc1fffef2588d0da4e43720c/Images/Databases-46.png)
 
 -    Do you notice that your database has the name nextwork-db-cluster and that's there's two of them? What's with that?
 
@@ -705,7 +705,7 @@ Open your local Terminal
         -    Press **Windows + R** to open the Run dialog.
         -    Type `cmd` or `powershell` and press **Enter**.
  
-![image alt](Databases-47)
+![image alt](https://github.com/AtulSharmaGeit/AWS-X-Databases/blob/22460274f1da260cbc1fffef2588d0da4e43720c/Images/Databases-47.png)
 
 Connect to your EC2 instance
 -    We need to access our **.pem** file in order to login successfully to our EC2 instance - remember, the **.pem** file is like our keys to our EC2 instance!
@@ -724,7 +724,7 @@ Great! We have found our "keys" to get into our EC2 instance. Now we just need t
 -    Back in your AWS console, navigate to the details page of your **nextwork-ec2-instance-web-server** EC2 instance.
 -    Copy your **Public IPv4 DNS** address.
 
-![image alt](Databases-48)
+![image alt](https://github.com/AtulSharmaGeit/AWS-X-Databases/blob/22460274f1da260cbc1fffef2588d0da4e43720c/Images/Databases-48.png)
 
 -    Back in your terminal run the following command:
 
@@ -748,7 +748,7 @@ chmod 400 YOUR_PEM_FILE_NAME
 ssh -i YOUR_PEM_FILE_NAME ec2-user@YOUR_EC2_ADDRESS
 ```
 
-![image alt](Databases-49)
+![image alt](https://github.com/AtulSharmaGeit/AWS-X-Databases/blob/22460274f1da260cbc1fffef2588d0da4e43720c/Images/Databases-49.png)
 
 -    Now remember that our EC2 instance is just another computer. First thing we need to do is make sure all the software on it is up to date!
 -    Run the following command:
@@ -777,7 +777,7 @@ sudo systemctl start httpd
         -    Eg. `http://ec2-42-8-168-21.us-west-1.compute.amazonaws.com` - just make sure it's actually our one!
         -    Make sure to change https to http - no 's'!
  
-![image alt](Databases-50)
+![image alt](https://github.com/AtulSharmaGeit/AWS-X-Databases/blob/22460274f1da260cbc1fffef2588d0da4e43720c/Images/Databases-50.png)
 
 **Step - 2 : Make your Web App Cool**
 
@@ -805,7 +805,7 @@ ls -ld
 
 Command **ls** means list, and **-ld** means "list the details". Does the details of our folder look like this?
 
-![image alt](Databases-51)
+![image alt](https://github.com/AtulSharmaGeit/AWS-X-Databases/blob/22460274f1da260cbc1fffef2588d0da4e43720c/Images/Databases-51.png)
 
 This means that the **root** user is the owner of this folder, and **only** the owner can edit this folder. When we access an EC2 instance using a key pair, we're by default logging in as an admin user (called ec2-user) which is not the root user! Let's change the owner of this folder so we (ec2-user) can edit it.
 
@@ -827,7 +827,7 @@ sudo chown ec2-user:ec2-user /var/www
 ls -ld var/www
 ```
 
-![image alt](Databases-52)
+![image alt](https://github.com/AtulSharmaGeit/AWS-X-Databases/blob/22460274f1da260cbc1fffef2588d0da4e43720c/Images/Databases-52.png)
 
 Let's try it again.
 -    Navigate to your **www** folder
@@ -860,14 +860,14 @@ cd inc
 nano dbinfo.inc
 ```
 
-![image alt](Databases-53)
+![image alt](https://github.com/AtulSharmaGeit/AWS-X-Databases/blob/22460274f1da260cbc1fffef2588d0da4e43720c/Images/Databases-53.png)
 
 **Nano** is a way we can edit files in the terminal. We've just opened our blank **dbinfo.inc** file, and now we're going to add some code that connects it to our AWS database.
 
 -    **dbinfo.inc** is a settings file that stores the connection details our EC2 instance will need to connect to our Aurora database. To complete this file, we need our Aurora database **endpoint**.
 -    Navigate to our Aurora database details in AWS and copy the **Endpoint** of our **Writer** instance.
 
-![image alt](Databases-54)
+![image alt](https://github.com/AtulSharmaGeit/AWS-X-Databases/blob/22460274f1da260cbc1fffef2588d0da4e43720c/Images/Databases-54.png)
 
 -    Copy and paste the following code to connect our EC2 instance to our Aurora database to the **dbinfo.inc** file.
 -    Make sure to replace **YOUR_ENDPOINT** with our actual Aurora Endpoint!
@@ -883,7 +883,7 @@ define('DB_DATABASE', 'sample');
 ?>
 ```
 
-![image alt](Databases-55)
+![image alt](https://github.com/AtulSharmaGeit/AWS-X-Databases/blob/22460274f1da260cbc1fffef2588d0da4e43720c/Images/Databases-55.png)
 
 -    Save and close the **dbinfo.inc** file by using **Ctrl+S** to save and then **Ctrl+X** to exit.
 
@@ -1026,22 +1026,22 @@ function TableExists($tableName, $connection, $dbName) {
 ?>                        
 ```
 
-![image alt](Databases-56)
+![image alt](https://github.com/AtulSharmaGeit/AWS-X-Databases/blob/22460274f1da260cbc1fffef2588d0da4e43720c/Images/Databases-56.png)
 
 This big block of code is what makes our new web app look so cool! It's pulling in the details from our dbinfo.inc file we created earlier and using it to display up-to-date changes directly from our website.
 
 -    Save and close the **SamplePage.php** file by using **Ctrl+S** to save and then **Ctrl+X** to exit.
 -    Verify that your web server successfully connects to your DB cluster by opening a web browser and browsing to `http://EC2-instance-endpoint/SamplePage.php`. 
 
-![image alt](Databases-57)
+![image alt](https://github.com/AtulSharmaGeit/AWS-X-Databases/blob/22460274f1da260cbc1fffef2588d0da4e43720c/Images/Databases-57.png)
 
 -    In browser, where our new web app is running, add some new data.
 
-![image alt](Databases-58)
+![image alt](https://github.com/AtulSharmaGeit/AWS-X-Databases/blob/22460274f1da260cbc1fffef2588d0da4e43720c/Images/Databases-58.png)
 
 -    Notice how your results show on the page? If you're wondering how that happens, go back and have a look at your **SamplePage.php** file. All the magic is there!
 
-![image alt](Databases-59)
+![image alt](https://github.com/AtulSharmaGeit/AWS-X-Databases/blob/22460274f1da260cbc1fffef2588d0da4e43720c/Images/Databases-59.png)
 
 -    To access our database, we're going to use **MySQL**.
 -    Download the MySQL repository into your EC2 instance:
@@ -1075,17 +1075,17 @@ mysql -h YOUR_ENDPOINT -P YOUR_PORT -u YOUR_AURORA_USERNAME -p
         -    This shows us the tables in our **sample** schema.
         -    If wondering where **Employees** came from, check our **SamplePage.php** file. It's all there! (Hint: this is also where we can change it if we're feeling creative)
 
-![image alt](Databases-60)
+![image alt](https://github.com/AtulSharmaGeit/AWS-X-Databases/blob/22460274f1da260cbc1fffef2588d0da4e43720c/Images/Databases-60.png)
 
 -    Run `DESCRIBE EMPLOYEES`;
         -    This tells you how the **Employees** table is structured.
  
-![image alt](Databases-61)
+![image alt](https://github.com/AtulSharmaGeit/AWS-X-Databases/blob/22460274f1da260cbc1fffef2588d0da4e43720c/Images/Databases-61.png)
 
 -    Run `SELECT * FROM EMPLOYEES`;
         -    This shows you the actual data in your table!
  
-![image alt](Databases-62)
+![image alt](https://github.com/AtulSharmaGeit/AWS-X-Databases/blob/22460274f1da260cbc1fffef2588d0da4e43720c/Images/Databases-62.png)
 
 -    Have a play around adding more data in our web app, then re-running the commands above to check the data in your database.
 
@@ -1116,14 +1116,14 @@ In Amazon DynamoDB, all data is organized into tables! Unlike relational databas
 
 Think of a **partition key** as the filter that DynamoDB will use to split up and find data. Partition key values don't have to be unique. For example if "Color" is a partition key, items can share partition key values like "Blue", "Green", "Red" and more. Later on, partition keys are used to efficiently find and grab items we're looking for (e.g. "find all items that have the Color "Green")! That's why every item in a DynamoDB table must have a value for the table's partition key - otherwise, DynamoDB would have no way of finding that item.
 
-![image alt](Databases-63)
+![image alt](https://github.com/AtulSharmaGeit/AWS-X-Databases/blob/22460274f1da260cbc1fffef2588d0da4e43720c/Images/Databases-63.png)
 
 -    Next, under **Table settings**, select **Customize settings**.
 -    Expand the **Capacity calculator** section.
 -    Oooo, here's a tip on how AWS charges for DynamoDB.
 -    Note: we're about to see a cost estimate, but this project and the tables we create are free!
 
-![image alt](Databases-64)
+![image alt](https://github.com/AtulSharmaGeit/AWS-X-Databases/blob/22460274f1da260cbc1fffef2588d0da4e43720c/Images/Databases-64.png)
 
 AWS cost estimates always tell us how much a resource might cost us money based on our current settings, but this estimate doesn't consider the AWS Free Tier. Right before AWS sends us a bill, AWS will check our actual use and won't charge us if we haven't gone over Free Tier limits.
 
@@ -1142,14 +1142,14 @@ Auto scaling can automatically adjust our database's performance (i.e. how fast 
 -    Hmm, what are capacity units?
 -    Back in our **Capacity Calculator**, notice that there's something called **Read capacity units** (RCUs) at the bottom of the panel.
 
-![image alt](Databases-65)
+![image alt](https://github.com/AtulSharmaGeit/AWS-X-Databases/blob/22460274f1da260cbc1fffef2588d0da4e43720c/Images/Databases-65.png)
 
 -    In your calculator, try changing the number of **Item read/second** to `2`
 -    The number of **Read capacity units** in the calculator is still `1`!
 -    Now try changing the number of **Item read/second** to `3` in the calculator.
 -    Aha, the number of **Read capacity units** went up to `2`!
 
-![image alt](Databases-66)
+![image alt](https://github.com/AtulSharmaGeit/AWS-X-Databases/blob/22460274f1da260cbc1fffef2588d0da4e43720c/Images/Databases-66.png)
 
 Think of read capacity units (RCUs) as a way to measure how many engines DynamoDB is using to operate. **1 read capacity unit (RCU)** = DynamoDB is using a single engine to run its read operations. This lets DynamoDB perform a max of 2 reads per second. So if we decide we actually want DynamoDB to run 3 reads per second, 1 engine won't be enough! The capacity calculator updates RCUs to 2, so now there are two engines powering DynamoDB to run read operations.
 
@@ -1164,7 +1164,7 @@ Yup, that means it costs more to run write operations than read operations. AWS 
 
 To make sure we don't get charged for this project, delete all resources once we're done. The **Free Tier** for DynamoDB gives us 25GB of data storage, plus 25 Write and 25 Read Capacity Units (WCU, RCU). This is enough to handle 200M requests per month... all for free.
 
-![image alt](Databases-67)
+![image alt](https://github.com/AtulSharmaGeit/AWS-X-Databases/blob/22460274f1da260cbc1fffef2588d0da4e43720c/Images/Databases-67.png)
 
 -    Select **Create table**.
 -    Once our table is created, click into our table's name.
@@ -1172,7 +1172,7 @@ To make sure we don't get charged for this project, delete all resources once we
 -    Take a moment to look around before moving onto the next step. Get comfortable with the screen and the different things on it - there are quite a few panels in this page!
 -    When ready, select **Explore table items** on the top right hand corner.
 
-![image alt](Databases-68)
+![image alt](https://github.com/AtulSharmaGeit/AWS-X-Databases/blob/22460274f1da260cbc1fffef2588d0da4e43720c/Images/Databases-68.png)
 
 -    Under **Items returned**, select **Create item**.
 -    Awesome! From the DynamoDB console, we can enter data manually straight away.
@@ -1190,13 +1190,13 @@ In DynamoDB, an attribute is like a piece of data about an item. In this case, o
 
 Nice! Notice a green confirmation banner that tells us we've consumed 0.5 Read capacity units.
 
-![image alt](Databases-69)
+![image alt](https://github.com/AtulSharmaGeit/AWS-X-Databases/blob/22460274f1da260cbc1fffef2588d0da4e43720c/Images/Databases-69.png)
 
 'Read capacity units consumed: 0.5' means DynamoDB used only 0.5 RCUs to add that item. But AWS Free Tier only provides 25 RCUs a month, this **doesn't** mean we only have 24.5 RCUs left for the rest of this project. Think of it like we're driving a car, and the RCU is our speedometer telling us how much data it's processing a second. As long as we're not asking our table to speed up and perform lots of read operations in the same second, we'll be okay!
 
 -    Check our work. Do you see a **Table** called **NextWorkStudents** with a student **Nikko**?
 
-![image alt](Databases-70)
+![image alt](https://github.com/AtulSharmaGeit/AWS-X-Databases/blob/22460274f1da260cbc1fffef2588d0da4e43720c/Images/Databases-70.png)
 
 This DynamoDB table makes it seem like data is organized in rows and columns, but it's actually quite different from traditional relational databases. Instead of looking at this as a spreadsheet, look at a DynamoDB table as a list of items (i.e. StudentNames, like Nikko), each with their own list of attributes (e.g. ProjectsComplete).
 
@@ -1209,7 +1209,7 @@ With DynamoDB, our table can become very flexible and we can start adding new an
 -    At the top of your AWS Management Console, select the icon for **AWS CloudShell**.
 -    Wait 30 seconds for your environment to be ready.
 
-![image alt](Databases-71)
+![image alt](https://github.com/AtulSharmaGeit/AWS-X-Databases/blob/22460274f1da260cbc1fffef2588d0da4e43720c/Images/Databases-71.png)
 
 -    Run these commands to create new tables:
 
@@ -1280,7 +1280,7 @@ Can you guess what might happen if we ran a wait command before creating the res
 -    Confirm that you see four new tables!
 -    Tip: we might need to refresh our page if you don't see them straight away.
 
-![image alt](Databases-72)
+![image alt](https://github.com/AtulSharmaGeit/AWS-X-Databases/blob/22460274f1da260cbc1fffef2588d0da4e43720c/Images/Databases-72.png)
 
 **Step - 3 : Load Data into Our Tables**
 
@@ -1300,14 +1300,14 @@ CloudShell is an environment that can also handle 1GB of storage, so we can save
 
 -    Run `ls` to confirm that all files are now inside your CloudShell environment:
 
-![image alt](Databases-73)
+![image alt](https://github.com/AtulSharmaGeit/AWS-X-Databases/blob/22460274f1da260cbc1fffef2588d0da4e43720c/Images/Databases-73.png)
 
 -    Want to see what's inside these files?
 -    Run `cat Forum.json`
 
 The **cat** command opens up and lets us read files directly in the terminal! So when we run `cat Forum.json`, the terminal will show us all the data inside the **Forum.json** file right on our screen. This is such a quick way to view or verify the contents of a file without having to open it somewhere else.
 
-![image alt](Databases-74)
+![image alt](https://github.com/AtulSharmaGeit/AWS-X-Databases/blob/22460274f1da260cbc1fffef2588d0da4e43720c/Images/Databases-74.png)
 
 **Forum.json** contains data that's been formatted specifically for loading into DynamoDB:
     1.    `"Forum"`: tells DynamoDB that the data relates to the Forum table.
@@ -1338,7 +1338,7 @@ Each .json file we upload tells DynamoDB which table the items should go to!
 
 -    After each data load, we should get this comment saying that there were no Unprocessed Items.
 
-![image alt](Databases-75)
+![image alt](https://github.com/AtulSharmaGeit/AWS-X-Databases/blob/22460274f1da260cbc1fffef2588d0da4e43720c/Images/Databases-75.png)
 
 Unprocessed items are records that weren't written to our database! If you see an unprocessed item, an error happened while loading our data into DynamoDB.
 
@@ -1349,7 +1349,7 @@ Unprocessed items are records that weren't written to our database! If you see a
 -    Select **Explore table items** on the top right.
 -    Wooooohoo! Our items are now on display.
 
-![image alt](Databases-76)
+![image alt](https://github.com/AtulSharmaGeit/AWS-X-Databases/blob/22460274f1da260cbc1fffef2588d0da4e43720c/Images/Databases-76.png)
 
 The data we loaded when we ran `aws dynamodb batch-write-item` is here! We can see now that the table has a partition key of Id (the very first column!), and there are 6 items in the table.
 
@@ -1360,25 +1360,25 @@ The data we loaded when we ran `aws dynamodb batch-write-item` is here! We can s
 -    Click into a Project e.g. click into the item with the Id `1`.
 -    Wow! We get to see all the attributes in this Project right away.
 
-![image alt](Databases-77)
+![image alt](https://github.com/AtulSharmaGeit/AWS-X-Databases/blob/22460274f1da260cbc1fffef2588d0da4e43720c/Images/Databases-77.png)
 
 -    Click **Add new attribute**, select **String** from the dropdown.
 -    Name the new attribute `StudentsComplete`
 -    For the value, enter `Nikko`
 
-![image alt](Databases-78)
+![image alt](https://github.com/AtulSharmaGeit/AWS-X-Databases/blob/22460274f1da260cbc1fffef2588d0da4e43720c/Images/Databases-78.png)
 
 -    When done, click **Save and close**.
 -    Nice, we've just added a new attribute - **StudentsComplete** to an item!
 -    Now take a look at our Table - looks like **StudentsComplete** is now a new attribute at the top of the table.
 
-![image alt](Databases-79)
+![image alt](https://github.com/AtulSharmaGeit/AWS-X-Databases/blob/22460274f1da260cbc1fffef2588d0da4e43720c/Images/Databases-79.png)
 
 -    Does that mean StudentsComplete is now an attribute for all the other items in the table?
 -    Let's find out. Try opening a Video item e.g. the item with Id `203`.
 -    Ooo this item has its own list of attributes...
 
-![image alt](Databases-80)
+![image alt](https://github.com/AtulSharmaGeit/AWS-X-Databases/blob/22460274f1da260cbc1fffef2588d0da4e43720c/Images/Databases-80.png)
 
 -    Is our new attribute **StudentsComplete** here?
 -    Nope, it isn't!
@@ -1400,20 +1400,20 @@ This has huge impacts on a DynamoDB vs a relational database's flexibility and s
 We've got our DynamoDB tables AND loaded in data. Now let's extract some insights from our data using queries.
 -    Stay on the **ContentCatalog** table, but this time let's select **Query** under the heading **Scan or query items**.
 
-![image alt](Databases-81)
+![image alt](https://github.com/AtulSharmaGeit/AWS-X-Databases/blob/22460274f1da260cbc1fffef2588d0da4e43720c/Images/Databases-81.png)
 
 -    Let's enter an **Id (Partition key)** to query for a specific item. Enter `201`
 -    Select **Run**.
 -    Oooo, now only the specific item you've searched for is in your table.
 
-![image alt](Databases-82)
+![image alt](https://github.com/AtulSharmaGeit/AWS-X-Databases/blob/22460274f1da260cbc1fffef2588d0da4e43720c/Images/Databases-82.png)
 
 -    Are we ready to query another table?
 -    From the **Tables** section on the left hand side of the console, select **Comment**.
 -    Expand the **Scan or query** items arrow.
 -    Select **Query**.
 
-![image alt](Databases-83)
+![image alt](https://github.com/AtulSharmaGeit/AWS-X-Databases/blob/22460274f1da260cbc1fffef2588d0da4e43720c/Images/Databases-83.png)
 
 -    Ooo, notice anything different?
 -    There's **Id (Partition key)** like last time, but there's also a new Sort key called **CommentDataTime** underneath.
@@ -1424,7 +1424,7 @@ A sort key is a great (and oftentimes, necessary) tool for tables where items ca
 
 -    Before we run any queries, check out the items in **Comment**.
 
-![image alt](Databases-84)
+![image alt](https://github.com/AtulSharmaGeit/AWS-X-Databases/blob/22460274f1da260cbc1fffef2588d0da4e43720c/Images/Databases-84.png)
 
 This table is storing comments left on posts in the NextWork community. It might help to check out the Posts table too - notice that there are two items there, and each item is a post that was made in the community. A Comment is a comment made on that post, which is why their ID is the name of the original post!
 
@@ -1435,7 +1435,7 @@ This table is storing comments left on posts in the NextWork community. It might
 -    Select **Run**.
 -    Bingo!
 
-![image alt](Databases-85)
+![image alt](https://github.com/AtulSharmaGeit/AWS-X-Databases/blob/22460274f1da260cbc1fffef2588d0da4e43720c/Images/Databases-85.png)
 
 -    Here's your next challenge: how would you look for all comments posted by **User Abdulrahman**?
 -    Clear the **Id (Partition key)** and **CommentDateTime (Sort key)**.
@@ -1444,7 +1444,7 @@ This table is storing comments left on posts in the NextWork community. It might
 -    Enter `User Abdulrahmanas` the **Value**.
 -    Select **Run**.
 
-![image alt](Databases-86)
+![image alt](https://github.com/AtulSharmaGeit/AWS-X-Databases/blob/22460274f1da260cbc1fffef2588d0da4e43720c/Images/Databases-86.png)
 
 **There's an error!** That's right - we have to use the Id (Partition key) when we query items. This teaches us two things:
     1.    Data modelling is sooo important - data engineers think very carefully about what queries they should prepare and design for before they upload any data!
@@ -1469,7 +1469,7 @@ aws dynamodb get-item \
 
 `--key '{"Id":{"N":"201"}}'` tells DynamoDB that the item has the ID "201". The `{"N":}` means the ID is a number (N for Number).
 
-![image alt](Databases-87)
+![image alt](https://github.com/AtulSharmaGeit/AWS-X-Databases/blob/22460274f1da260cbc1fffef2588d0da4e43720c/Images/Databases-87.png)
 
 -    Next, run this command.
 
@@ -1484,7 +1484,7 @@ aws dynamodb get-item \
 
 -    Nice - here's our output!
 
-![image alt](Databases-88)
+![image alt](https://github.com/AtulSharmaGeit/AWS-X-Databases/blob/22460274f1da260cbc1fffef2588d0da4e43720c/Images/Databases-88.png)
 
 This command is just like the get-item command we ran before, but this time we're adding extra query options that tells DynamoDB exactly how we want it to get the item:
     1.    `--consistent-read` : we want a strongly consistent read.
@@ -1509,7 +1509,7 @@ aws dynamodb get-item \
 
 -    We will see that eventually consistent reads consume half as much capacity - which is why it's the default for DynamoDB read operations.
 
-![image alt](Databases-89)
+![image alt](https://github.com/AtulSharmaGeit/AWS-X-Databases/blob/22460274f1da260cbc1fffef2588d0da4e43720c/Images/Databases-89.png)
 
 **Step - 3 : Set up a transaction**
 
@@ -1522,13 +1522,13 @@ How does that impact how we manage our data? Let's find out...
 
 -    Check out the **Forum** table - there's a count for the number of **Posts**, and a count for the number of **comments** i.e. comments in each forum.
 
-![image alt](Databases-90)
+![image alt](https://github.com/AtulSharmaGeit/AWS-X-Databases/blob/22460274f1da260cbc1fffef2588d0da4e43720c/Images/Databases-90.png)
 
 -    That means if we add a new Comment to the **Comment** table, the database needs to increase the **Comments** count in the related **Forum** item.
 
-![image alt](Databases-91)
+![image alt](https://github.com/AtulSharmaGeit/AWS-X-Databases/blob/22460274f1da260cbc1fffef2588d0da4e43720c/Images/Databases-91.png)
 
-![image alt](Databases-91')
+![image alt](https://github.com/AtulSharmaGeit/AWS-X-Databases/blob/22460274f1da260cbc1fffef2588d0da4e43720c/Images/Databases-91'.png)
 
 -    How would we make sure that when a students posts a new Comment, the number of comments recorded in a forum also updates?
 -    Let's try do this using AWS CLI.
@@ -1566,7 +1566,7 @@ In this transaction, we are recording a new comment made by **User Connor**!
 
 That's why a transaction is so helpful to make sure the update is done consistently across both tables. This is an example situation where the AWS CLI is quite beneficial over the AWS Management Console - transactions don't exist in the console, and updating things manually with clicks can definitely lead to mistakes!
 
-![image alt](Databases-92)
+![image alt](https://github.com/AtulSharmaGeit/AWS-X-Databases/blob/22460274f1da260cbc1fffef2588d0da4e43720c/Images/Databases-92.png)
 
 -    Whoosh! We've updated both the **Comment** and **Forum** tables.
 -    Let's check our work.
@@ -1580,11 +1580,11 @@ aws dynamodb get-item \
 
 -    Here's what we'll see:
 
-![image alt](Databases-93)
+![image alt](https://github.com/AtulSharmaGeit/AWS-X-Databases/blob/22460274f1da260cbc1fffef2588d0da4e43720c/Images/Databases-93.png)
 
 -    Check the number of comments in the Events table in our console now too:
 
-![image alt](Databases-94)
+![image alt](https://github.com/AtulSharmaGeit/AWS-X-Databases/blob/22460274f1da260cbc1fffef2588d0da4e43720c/Images/Databases-94.png)
 
 Nice work! We've just learnt how to create a DynamoDB table AND create some fantastic queries.
 
@@ -1603,5 +1603,5 @@ aws dynamodb delete-table --table-name ContentCatalog
 aws dynamodb delete-table --table-name Post
 ```
 
-![image alt](Databases-95)
+![image alt](https://github.com/AtulSharmaGeit/AWS-X-Databases/blob/22460274f1da260cbc1fffef2588d0da4e43720c/Images/Databases-95.png)
 
