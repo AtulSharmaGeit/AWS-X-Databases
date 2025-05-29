@@ -1450,6 +1450,156 @@ This table is storing comments left on posts in the NextWork community. It might
     1.    Data modelling is sooo important - data engineers think very carefully about what queries they should prepare and design for before they upload any data!
     2.    We probably wouldn't have this kind of issue if we could use SQL, so this is a situation where it would be beneficial to use a relational database!
 
-Data modeling in DynamoDB is all about planning how to set up our tables, e.g. what should be a table's partition keys and sort keys? This planning stage is essential because it affects how easily we can get to our data and how quickly our database responds later on. If we don’t get this part right, like if we use the wrong keys in our queries, finding the data we need can become really slow or even impossible (like our scenario here!).
+**Data modeling** in DynamoDB is all about planning how to set up our tables, e.g. what should be a table's partition keys and sort keys? This planning stage is essential because it affects how easily we can get to our data and how quickly our database responds later on. If we don’t get this part right, like if we use the wrong keys in our queries, finding the data we need can become really slow or even impossible (like our scenario here!).
 
 **Step - 2 : Run Queries with AWS CLI**
+
+Let's see how we could run the same queries in the CLI!
+-    Head back to your **AWS CloudShell** environment, this time running this AWS CLI command:
+
+```bash
+aws dynamodb get-item \
+    --table-name ContentCatalog \
+    --key '{"Id":{"N":"201"}}'
+```
+
+`aws dynamodb get-item` is the AWS CLI command to get a single item from a DynamoDB table.
+
+`--table-name ContentCatalog` tells DynamoDB that the item belongs in the table called ContentCatalog.
+
+`--key '{"Id":{"N":"201"}}'` tells DynamoDB that the item has the ID "201". The `{"N":}` means the ID is a number (N for Number).
+
+![image alt](Databases-87)
+
+-    Next, run this command.
+
+```bash
+aws dynamodb get-item \
+    --table-name ContentCatalog \
+    --key '{"Id":{"N":"101"}}' \
+    --consistent-read \
+    --projection-expression "Title, ContentType, Services" \
+    --return-consumed-capacity TOTAL
+```
+
+-    Nice - here's our output!
+
+![image alt](Databases-88)
+
+This command is just like the get-item command we ran before, but this time we're adding extra query options that tells DynamoDB exactly how we want it to get the item:
+    1.    `--consistent-read` : we want a strongly consistent read.
+    2.    `--projection-expression` : we only want to know some of the item's attributes.
+    3.    `--return-consumed-capacity` : we want to know how much capacity was consumed by the request.
+
+A **strongly consistent read** means DynamoDB will give us the guaranteed most recent version of that item. By default, a read from DynamoDB uses **eventual consistency**, which is a lower cost option that is faster and retrieves a version of the data that might not be the most updated version.
+
+**Eventual consistency** is no issue if we're using a small dataset (consistency is usually reached within a second of updating the data anyway). But, strongly consistent reads could be our choice for situations where our app needs the most recent data to make important decisions e.g. financial trading apps that need the most recent market data.
+
+-    Before we move on, check our output again - did it return any item at all?
+-    Look closely at the command we ran... is there any item in **ContentCatalog** with the **Id** `101`? (Nope!)
+-    Run the command again, this time with a valid Id and back to an eventually consistent read:
+
+```bash
+aws dynamodb get-item \
+    --table-name ContentCatalog \
+    --key '{"Id":{"N":"202"}}' \
+    --projection-expression "Title, ContentType, Services" \
+    --return-consumed-capacity TOTAL
+```
+
+-    We will see that eventually consistent reads consume half as much capacity - which is why it's the default for DynamoDB read operations.
+
+![image alt](Databases-89)
+
+**Step - 3 : Set up a transaction**
+
+We might notice that our tables contain lots of related data!
+
+1.    Each **Forum** contains multiple **Posts**.
+2.    Each **Post** contains multiple **Comments**.
+    
+How does that impact how we manage our data? Let's find out...
+
+-    Check out the **Forum** table - there's a count for the number of **Posts**, and a count for the number of **comments** i.e. comments in each forum.
+
+![image alt](Databases-90)
+
+-    That means if we add a new Comment to the **Comment** table, the database needs to increase the **Comments** count in the related **Forum** item.
+
+![image alt](Databases-91)
+
+-    How would we make sure that when a students posts a new Comment, the number of comments recorded in a forum also updates?
+-    Let's try do this using AWS CLI.
+-    Run this command in our AWS CloudShell environment:
+
+```bash
+aws dynamodb transact-write-items --client-request-token TRANSACTION1 --transact-items '[
+    {
+        "Put": {
+            "TableName" : "Comment",
+            "Item" : {
+                "Id" : {"S": "Events/Do a Project Together - NextWork Study Session"},
+                "CommentDateTime" : {"S": "2024-9-27T17:47:30Z"},
+                "Comment" : {"S": "Excited to attend!"},
+                "PostedBy" : {"S": "User Connor"}
+            }
+        }
+    },
+    {
+        "Update": {
+            "TableName" : "Forum",
+            "Key" : {"Name" : {"S": "Events"}},
+            "UpdateExpression": "ADD Comments :inc",
+            "ExpressionAttributeValues" : { ":inc": {"N" : "1"} }
+        }
+    }
+]'
+```
+
+This command is a **transaction**, which is a group of operations that all have to succeed - if any of the operations in the group fails, none of the changes get applied. This makes sure that any change to your database is consistent across all our tables!
+
+In this transaction, we are recording a new comment made by **User Connor**!
+    1.    The **Comment** table needs to update - we're adding a new item to the table with all the details of Connor's comment.
+    2.    The **Forum** table also needs to update - Connor's comment was made on a post in the Events forum, so the number of comments in that forum should go up by 1.
+
+That's why a transaction is so helpful to make sure the update is done consistently across both tables. This is an example situation where the AWS CLI is quite beneficial over the AWS Management Console - transactions don't exist in the console, and updating things manually with clicks can definitely lead to mistakes!
+
+![image alt](Databases-92)
+
+-    Whoosh! We've updated both the **Comment** and **Forum** tables.
+-    Let's check our work.
+-    Run this command in CloudShell to view our Events forum, and we'll see the **Comments** count go up from **0** to **1**.
+
+```bash
+aws dynamodb get-item \
+    --table-name Forum \
+    --key '{"Name" : {"S": "Events"}}'
+```
+
+-    Here's what we'll see:
+
+![image alt](Databases-93)
+
+-    Check the number of comments in the Events table in our console now too:
+
+![image alt](Databases-94)
+
+Nice work! We've just learnt how to create a DynamoDB table AND create some fantastic queries.
+
+**Step - 4 : Delete Your Resources**
+
+Deleting resources that are not actively being used stops us getting charged and is a best practice. Not deleting our resources will result in charges to our account.
+
+-    **DynamoDB tables** : Try delete our tables using AWS CloudShell!
+
+This command will delete all of their items too.
+
+```bash
+aws dynamodb delete-table --table-name Comment
+aws dynamodb delete-table --table-name Forum
+aws dynamodb delete-table --table-name ContentCatalog
+aws dynamodb delete-table --table-name Post
+```
+
+![image alt](Databases-95)
+
