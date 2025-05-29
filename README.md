@@ -1,6 +1,8 @@
 # AWS-X-Databases
 ##  Project Overview
 
+This repository showcases a collection of five projects focused on leveraging AWS database services to build scalable and efficient data solutions. These projects collectively demonstrate proficiency in AWS database services, including RDS, Aurora, and DynamoDB, with a focus on designing robust, scalable, and efficient database solutions for modern applications.
+
 ---
 ##  Table Of Content
 -  [Visualize a Relational Database](#visualize-a-relational-database)
