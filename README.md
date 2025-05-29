@@ -1528,6 +1528,8 @@ How does that impact how we manage our data? Let's find out...
 
 ![image alt](Databases-91)
 
+![image alt](Databases-91')
+
 -    How would we make sure that when a students posts a new Comment, the number of comments recorded in a forum also updates?
 -    Let's try do this using AWS CLI.
 -    Run this command in our AWS CloudShell environment:
